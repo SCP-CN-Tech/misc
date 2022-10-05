@@ -1,0 +1,70 @@
+<html>
+<head>
+<style>
+body {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: .9em;
+}
+h1 {
+    color: #901;
+    font-weight: bold;
+    font-size: 130%;
+}
+</style>
+<!-- C-take's resizing iframe method -->
+<script type="text/javascript" src="https://interwiki.scpwikicn.com/createResizeIframe.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+<h1 id="timeDate"></h1>
+
+<script type="text/javascript">
+var re = false;
+var timeStamp = new Date();
+var timeYear = timeStamp.getFullYear();
+var timeMonth = ("0" + (timeStamp.getMonth() + 1)).substr(-2);
+var baseURL = document.referrer.match(/https?:\/\/[^/]*/)[0];
+var pageURL = document.referrer.replace(/https?:\/\/[^/]*\/?/, "");
+
+function redirect() {
+    if (!re) {
+        re = true;
+        window.parent.location.replace(baseURL + "/top-rated-pages-this-month/range/others/date/" + timeYear + "." + timeMonth);
+    }
+}
+
+function redirectCheck() {
+    try {
+        var checkURL = window.parent.window.checkFrame.location.href;
+        if (checkURL != "") redirect();
+    } catch(e) {}
+}
+redirectCheck();
+
+if (pageURL.length > 0) {
+    var reg = /\/date\/20[0-9]{2}(\.[0-1]?[0-9])?\//;
+    var pageParameter = "";
+    for (var i = 0; i < pageURL.length; i++) {
+        if(pageURL.charAt(i) == "#")break;
+    }
+    pageURL = pageURL.slice(0, i);
+    for (var i = 0; i < pageURL.length; i++) {
+        if(pageURL.charAt(i) == "/")break;
+    }
+    pageParameter = pageURL.slice(i).replace(/^\/*/, "/").replace(/\/*$/, "/");
+    if (pageParameter.search("/range/others/") > -1 && pageParameter.search(reg) > -1) {
+        var timeDate = "";
+        pageParameter = reg.exec(pageParameter)[0].replace(/^\/*/, "").replace(/\/*$/, "").replace("date/", "").split(".");
+        timeDate = pageParameter[0] + "年";
+        if (parseInt(pageParameter[1]) >= 1 && parseInt(pageParameter[1]) <= 12) {
+            timeDate += ("0" + pageParameter[1]).substr(-2) + "月";
+        }
+        document.getElementById("timeDate").innerText = timeDate;
+    } else {
+        redirect();
+    }
+}
+</script>
+<div id="iframeset"></div>
+</body>
+</html>
